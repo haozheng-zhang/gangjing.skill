@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gangjing-skill"
+version = "0.1.0"
+description = "杠精.skill：一个专门喷醒自嗨项目、伪需求、烂 PRD、技术炫技和创业幻觉的中文 Agent Skill。"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "gangjing-skill contributors" }]
+keywords = ["agent-skill", "prompt", "cli", "chinese", "review"]
+dependencies = ["typer>=0.12.0"]
+
+[project.optional-dependencies]
+llm = ["openai>=1.0.0"]
+dev = ["pytest>=8.0.0", "typer>=0.12.0"]
+
+[project.scripts]
+gangjing = "gangjing.cli:main"
+gangjing-web = "gangjing.web:main"
+
+[tool.setuptools.packages.find]
+include = ["gangjing*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
