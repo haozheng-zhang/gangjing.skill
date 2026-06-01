@@ -8,6 +8,7 @@ venv/
 dist/
 build/
 *.egg-info/
+*.spec
 .env
 *.log
 result.md

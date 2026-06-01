@@ -3,8 +3,11 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import socket
+import threading
 import urllib.error
 import urllib.request
+import webbrowser
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
@@ -486,9 +489,23 @@ class GangjingHandler(BaseHTTPRequestHandler):
             self.write_json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
 
 
-def run(host: str = "127.0.0.1", port: int = 8765) -> None:
+def find_available_port(host: str = "127.0.0.1", preferred_port: int = 8765) -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        if probe.connect_ex((host, preferred_port)) != 0:
+            return preferred_port
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        probe.bind((host, 0))
+        return int(probe.getsockname()[1])
+
+
+def run(host: str = "127.0.0.1", port: int = 8765, open_browser: bool = False) -> None:
+    port = find_available_port(host, port)
     httpd = ThreadingHTTPServer((host, port), GangjingHandler)
-    print(f"gangjing web listening on http://{host}:{port}", flush=True)
+    url = f"http://{host}:{port}"
+    print(f"gangjing web listening on {url}", flush=True)
+    if open_browser:
+        threading.Timer(0.4, lambda: webbrowser.open(url)).start()
     httpd.serve_forever()
 
 
@@ -496,8 +513,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Start gangjing web chat.")
     parser.add_argument("--host", default=os.getenv("GANGJING_HOST", "127.0.0.1"))
     parser.add_argument("--port", type=int, default=int(os.getenv("GANGJING_PORT", "8765")))
+    parser.add_argument("--open", action="store_true", help="Open the browser automatically.")
     args = parser.parse_args()
-    run(host=args.host, port=args.port)
+    run(host=args.host, port=args.port, open_browser=args.open)
 
 
 if __name__ == "__main__":

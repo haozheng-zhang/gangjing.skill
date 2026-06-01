@@ -33,15 +33,42 @@
 - 医疗、法律、金融决策本身
 - 已经有清晰用户和数据，只需要普通执行建议的任务
 
-## 安装
+## 零门槛使用
+
+Windows 用户不需要安装 Python。
+
+1. 到 GitHub Releases 下载 `gangjing-skill.exe`。
+2. 双击打开。
+3. 浏览器会自动进入本地对话界面。
+4. 在左侧点击 DeepSeek API key 获取地址，创建 key 后填入“临时 API Key”。
+5. 直接开始对话。
+
+本地网页默认地址：
+
+```text
+http://127.0.0.1:8765
+```
+
+如果 `8765` 端口被占用，程序会自动换一个可用端口并打开浏览器。
+
+DeepSeek API key 获取地址：
+
+```text
+https://platform.deepseek.com/api_keys
+```
+
+key 只在当前浏览器里使用，不会写进项目文件。
+
+## 开发者启动
+
+如果你是开发者，想从源码运行：
 
 ```bash
 pip install -e .
+gangjing-web --open
 ```
 
-## 启动对话系统
-
-启动本地 Web 对话界面：
+或者只启动本地服务，不自动打开浏览器：
 
 ```bash
 gangjing-web
@@ -53,20 +80,28 @@ gangjing-web
 http://127.0.0.1:8765
 ```
 
-进入前端后，在左侧点击或复制 DeepSeek API key 获取地址：
-
-```text
-https://platform.deepseek.com/api_keys
-```
-
-创建 API key 后，把它填到页面左侧的“临时 API Key”输入框里，就可以直接开始对话。这个 key 只在当前浏览器里使用，不会写进项目文件。
-
-如果你更喜欢提前配置环境变量，也可以这样启动：
+如果你更喜欢提前配置环境变量：
 
 ```powershell
 $env:DEEPSEEK_API_KEY="your-deepseek-api-key"
-gangjing-web
+gangjing-web --open
 ```
+
+## 打包 Windows EXE
+
+本地打包：
+
+```powershell
+.\scripts\build-windows-exe.ps1
+```
+
+产物位置：
+
+```text
+dist/gangjing-skill.exe
+```
+
+仓库也包含 GitHub Actions：推送 `v*` tag 后会自动构建 Windows exe，并附加到 Release。
 
 ## Agent Skill 用法
 
